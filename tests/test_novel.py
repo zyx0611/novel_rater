@@ -1,6 +1,9 @@
+import allure
+
 from pages import novel_script
 
 class TestNovel:
+    @allure.title("测试文章评分")
     def test_article_rating(self):
         try:
             bool, message = novel_script.check_rating("""第1章 陨落的天才
@@ -119,8 +122,9 @@ class TestNovel:
     "创造力与新颖性": 10,
     "合规与伦理性": 20
   }百分制评分""")
-            assert bool;
+            assert bool, f"{message}";
         except Exception as e:
+            allure.attach(message, name="报错信息", attachment_type=allure.attachment_type.TEXT)
             raise
 
     #
