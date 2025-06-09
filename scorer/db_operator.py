@@ -12,12 +12,6 @@ GLOBAL_CLIENTS = {}  # {database_name: MongoClient实例}
 
 # ==========数据连接工具函数============
 
-# 传入集合名，返回对应的数据库名
-def get_db_name(collection_name):
-    for db_name, keywords in DB_GROUPS.items():
-        if collection_name in keywords:
-            return db_name
-    raise ValueError(f"❌ 未能匹配集合名 `{collection_name}` 到数据库，请检查 config.DB_GROUPS 设置。")
 
 # ========== 加载环境配置 ==========
 
@@ -33,16 +27,17 @@ def load_mongo_config(collection_name=None):
     load_dotenv()  # 确保加载 .env 文件
 
     # 从环境变量中读取MongoDB连接参数
-    mongo_host = os.getenv('MONGO_HOST')
-    mongo_port_str = os.getenv('MONGO_PORT', '27017')
-    mongo_port = int(mongo_port_str) if mongo_port_str.isdigit() else 27017
-    mongo_user = os.getenv('MONGO_USER')
-    mongo_pass = os.getenv('MONGO_PASS')
+    # mongo_host = os.getenv('MONGO_HOST', '127.0.0.1')
+    # mongo_port_str = os.getenv('MONGO_PORT', '27017')
+    # mongo_port = int(mongo_port_str) if mongo_port_str.isdigit() else 27017
+    # mongo_user = os.getenv('MONGO_USER', 'seo_ai')
+    # mongo_pass = os.getenv('MONGO_PASS', '14f118d5f470da591218e9a5')
+    mongo_host = '127.0.0.1'
+    mongo_port = '27017'
+    mongo_user = 'seo_ai'
+    mongo_pass = '14f118d5f470da591218e9a5'
 
-    mongo_db_name = get_db_name(collection_name)
-    if mongo_db_name == None:
-        logger.info(f"警告: 集合名判断错误。请检查 utils/config.py 文件。")
-        return None
+    mongo_db_name = 'seo_ai'
 
     if mongo_host and mongo_user and mongo_pass and mongo_db_name:
         return {
@@ -73,7 +68,7 @@ def get_connection(collection_name):
     db_name = config['database']
 
     if db_name not in GLOBAL_CLIENTS:
-        uri = f"mongodb://{config['user']}:{config['password']}@{config['host']}:{config['port']}/?authSource=pytest"
+        uri = f"mongodb://{config['user']}:{config['password']}@{config['host']}:{config['port']}/?authSource=admin"
         client = MongoClient(
             uri,
             maxPoolSize=50,

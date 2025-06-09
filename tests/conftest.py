@@ -21,22 +21,13 @@ def pytest_unconfigure(config):
     """
     logger.info("pytest 退出前，执行 Allure 结果解析...")
 
-    # 获取目标集合名称
-    target_collection = config.getoption("--target-collection")
-    domain_name = config.getoption("--domain-name")
-    if not target_collection:
-        logger.error("未提供 --target-collection，跳过 Allure 解析")
-        return
-    if not domain_name:
-        logger.error("未提供 --domain-name，跳过 Allure 解析")
-        return
-
-    allure_results_dir = get_allure_results_dir(domain_name)
-    parser = AllureResultParser(allure_results_dir, target_collection)
+    # allure_results_dir = get_allure_results_dir(domain_name)
+    allure_results_dir = os.path.join(BASE_DIR, f"allure-results")
+    parser = AllureResultParser(allure_results_dir)
     records = parser.parse_all_files()
     if records:
-        insert_many(target_collection, records)
-        logger.info(f"成功写入 {len(records)} 条测试记录到 MongoDB 集合 {target_collection}")
+        insert_many('text_result', records)
+        logger.info(f"成功写入 {len(records)} 条测试记录到 MongoDB 集合 text_result")
     else:
         logger.warning("没有解析到有效的 Allure 测试记录，跳过数据库写入。")
 

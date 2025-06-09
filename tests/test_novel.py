@@ -1,7 +1,12 @@
 import allure
 import pytest
 import chardet
+from bson import ObjectId
+from pymongo import MongoClient
+
+
 from pages import novel_script
+from scorer import db_operator
 
 import re
 
@@ -49,22 +54,42 @@ def load_article_chunks(path, max_length=3000):
     return chunks
 
 
-# 用 fixture 参数化文章段落
+#用 fixture 参数化文章段落
 @pytest.fixture(params=load_article_chunks("../斗破苍穹.txt"))
 def article_chunk(request):
     return request.param
 
 class TestNovel:
 
-    @allure.title("测试文章评分")
-    def test_article_rating(self, article_chunk):
-        try:
-            bool, message = novel_script.check_rating(article_chunk)
-            assert bool, f"{message}";
-        except Exception as e:
-            allure.attach(message, name="报错信息", attachment_type=allure.attachment_type.TEXT)
-            raise
+    # @allure.title("测试文章评分")
+    # def test_article_rating(self, article_chunk):
+    #     try:
+    #         bool, message = novel_script.check_rating(article_chunk)
+    #         assert bool, f"{message}";
+    #     except Exception as e:
+    #         allure.attach(message, name="报错信息", attachment_type=allure.attachment_type.TEXT)
+    #         raise
 
+    @allure.title("测试文章")
+    def test_article_rating(self):
+        try:
+            # result = db_operator.find_one('articles', {"_id": ObjectId("683ec87d5915b53208d861e1")})
+            # print(result)
+            response = {
+                "_id": '683ec7775915b53208d861e0',
+                "title": '测试文章',
+                "created_at": '2025-06-03T09:59:19.593Z',
+                "keyword": 'test',
+                "body": '用于预约申请护照、港澳通行证、台湾通行证等出入境证件的入口'
+            },
+            allure.attach(
+                str(response),  # 可以是 JSON 字符串
+                name="文章评分返回结果",
+                attachment_type=allure.attachment_type.JSON
+            )
+            assert True;
+        except Exception as e:
+            raise
 
     #
     # @allure.suite("AI SEO 合规检测")

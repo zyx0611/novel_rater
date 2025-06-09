@@ -21,34 +21,7 @@ class AllureResultParser:
         self.run_id = int(time.time() * 1000)
         logger.info(f"AllureResultParser 初始化，run_id = {self.run_id}，解析目录：{self.allure_results_dir}，目标集合：{self.collection_name}")
 
-    def wait_for_allure_files_stable(self, timeout=5, poll_interval=0.5):
-        logger.info(f"检测{self.allure_results_dir}目录中文件是否写入稳定...")
-
-        def snapshot():
-            files = [f for f in os.listdir(self.allure_results_dir) if f.endswith(".json")]
-            latest_mtime = max(
-                [os.path.getmtime(os.path.join(self.allure_results_dir, f)) for f in files], default=0)
-            return len(files), latest_mtime
-
-        start_time = time.time()
-        last_count, last_mtime = snapshot()
-        stable_cycles = 0
-
-        while time.time() - start_time < timeout:
-            time.sleep(poll_interval)
-            count, mtime = snapshot()
-            if count == last_count and mtime == last_mtime:
-                stable_cycles += 1
-                if stable_cycles >= 2:
-                    break
-            else:
-                stable_cycles = 0
-                last_count, last_mtime = count, mtime
-
-        logger.info(f"{self.allure_results_dir}目录文件状态已稳定，继续解析。")
-
     def parse_all_files(self) -> list:
-        self.wait_for_allure_files_stable()
 
         all_records = []
         files = os.listdir(self.allure_results_dir)
@@ -111,24 +84,24 @@ class AllureResultParser:
 
         if data.get("status"):
             logger.info(f"解析主测试记录: {data.get('name')} ({data.get('status')})")
+            novel_result = data.get('attachments', [{'info': '评分结果为空!'}])[0]
+            novel_info = {'info': '评分结果为空!'}
+            if novel_result.get('source') is not None:
+                with open(f'/allure-result/{novel_result.get('source')}', 'r') as f:
+                    # todo 读取结果文件放置数据库(未完成)
+                    text = f.read()
+
             records.append({
-                'date': data.get('parameters', []) and data['parameters'][0].get('value'),
-                'url':data.get('links',[]) and data['links'][0].get('url'),
                 'run_id': self.run_id,
-                'links': data.get('links', []),
                 'name': data.get('name', ''),
                 'fullName': data.get('fullName', ''),
                 'status': data.get('status', ''),
                 # 'statusDetails': data.get('statusDetails', []),
-                'statusDetails': data.get('statusDetails', {}).get('message', {}),
                 'start': data.get('start', 0),
                 'stop': data.get('stop', 0),
                 'duration': data.get('stop', 0) - data.get('start', 0),
-                'parameters': data.get('parameters', []),
-                'steps': data.get('steps', []),
-                'attachments': data.get('attachments', []),
-                'description': data.get('description', ''),
-                'labels': data.get('labels', [])
+                'labels': data.get('labels', []),
+                'novel_result': novel_info
             })
         else:
             logger.warning("主测试数据缺少 status 字段，跳过")
