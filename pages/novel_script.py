@@ -1,6 +1,5 @@
 import requests
 import re
-import jieba
 from scorer.log import logger
 
 def query_deepseek(prompt):
@@ -47,8 +46,8 @@ def load_banned_words(file_path):
 
 # 使用结巴进行分词检测
 def detect_banned_words(text, banned_words):
-    words = jieba.lcut(text)
-    found_words = [word for word in words if word in banned_words]
+    # words = jieba.lcut(text)
+    found_words = [word.replace(',', '') for word in banned_words if word.replace(',', '') in text]
 
     if found_words:
         return False, found_words
