@@ -1,4 +1,5 @@
 # utils/allure_parser.py
+import ast
 import os
 import json
 import time
@@ -6,7 +7,6 @@ import chardet
 import traceback
 from scorer import db_operator
 from scorer.log import logger
-
 
 class AllureResultParser:
     """
@@ -87,10 +87,10 @@ class AllureResultParser:
             novel_result = data.get('attachments', [{'info': '评分结果为空!'}])[0]
             novel_info = {'info': '评分结果为空!'}
             if novel_result.get('source') is not None:
-                with open(f'/allure-result/{novel_result.get('source')}', 'r') as f:
-                    # todo 读取结果文件放置数据库(未完成)
+                with open(f'../allure-results/{novel_result.get('source')}', 'r') as f:
                     text = f.read()
-
+                    obj = ast.literal_eval(text)
+                    novel_info = obj[0]
             records.append({
                 'run_id': self.run_id,
                 'name': data.get('name', ''),
