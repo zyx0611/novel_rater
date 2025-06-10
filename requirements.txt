@@ -1,3 +1,5 @@
 pytest
 allure
 chardet
+ast
+jieba

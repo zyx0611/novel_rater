@@ -1,5 +1,7 @@
 import requests
 import re
+import jieba
+from scorer.log import logger
 
 def query_deepseek(prompt):
     url = "http://115.190.111.233:11434/api/generate"  # 这里的地址换成容器暴露出来的地址和端口
@@ -36,3 +38,27 @@ def check_rating(prompt):
         return bool, scores
     else:
         return bool, result
+
+# 加载外部违规词库
+def load_banned_words(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        banned_words = f.read().splitlines()
+    return banned_words
+
+# 使用结巴进行分词检测
+def detect_banned_words(text, banned_words):
+    words = jieba.lcut(text)
+    found_words = [word for word in words if word in banned_words]
+
+    if found_words:
+        return False, found_words
+    else:
+        return True, ''
+
+def JudgeLllegalWords(text):
+    # 加载违规词库
+    banned_words = load_banned_words('../色情类.txt')
+    # 检测是否有违禁词
+    is_banned, banned_found = detect_banned_words(text, banned_words)
+    logger.info("违规词：%s", banned_found)
+    return is_banned, f'违规词:{banned_found}'
