@@ -1,4 +1,5 @@
 import os
+import sys
 from scorer.allure_parser import AllureResultParser
 from scorer.db_operator import insert_many, insert_one
 from scorer.log import logger
@@ -7,6 +8,7 @@ from scorer.log import logger
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 LOG_FILE_PATH = os.path.join(BASE_DIR, 'tests', 'run_logs', 'pytest.log')
 ERROR_FILE_PATH = os.path.join(BASE_DIR, 'tests', 'run_logs', 'error_url.csv')
+sys.path.insert(0, BASE_DIR)
 
 def get_allure_results_dir(domain_name: str):
     """

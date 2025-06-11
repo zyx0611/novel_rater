@@ -6,7 +6,14 @@ def query_deepseek(prompt):
     url = "http://115.190.111.233:11434/api/generate"  # 这里的地址换成容器暴露出来的地址和端口
     payload = {
         "model": "deepseek-r1:32b",
-        "prompt": prompt,
+        "prompt": f'''{prompt.get('chapter')},根据这个评分标准"GPT评分": {{
+    "语言流畅性": 20,
+    "情节合理性": 20,
+    "角色塑造": 10,
+    "结构完整性": 20,
+    "创造力与新颖性": 10,
+    "合规与伦理性": 20
+  }}百分制评分''',
         "stream": False
     }
     try:
@@ -34,7 +41,7 @@ def check_rating(prompt):
                 "得分": int(score),
                 "满分": int(full)
             })
-        return bool, scores
+        return bool, result
     else:
         return bool, result
 
@@ -56,7 +63,8 @@ def detect_banned_words(text, banned_words):
 
 def JudgeLllegalWords(text):
     # 加载违规词库
-    banned_words = load_banned_words('../色情类.txt')
+    # banned_words = load_banned_words('../色情类.txt')
+    banned_words = load_banned_words('色情类.txt')
     # 检测是否有违禁词
     is_banned, banned_found = detect_banned_words(text, banned_words)
     logger.info("违规词：%s", banned_found)
