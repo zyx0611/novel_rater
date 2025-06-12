@@ -1,10 +1,7 @@
 # db_operator.py
-import os
-
 from pymongo import MongoClient
 from contextlib import contextmanager
 from dotenv import load_dotenv
-from scorer.config import DB_GROUPS
 from scorer.log import logger
 
 # ========== 全局连接池缓存 ==========
@@ -32,10 +29,10 @@ def load_mongo_config(collection_name=None):
     # mongo_port = int(mongo_port_str) if mongo_port_str.isdigit() else 27017
     # mongo_user = os.getenv('MONGO_USER', 'seo_ai')
     # mongo_pass = os.getenv('MONGO_PASS', '14f118d5f470da591218e9a5')
-    mongo_host = '127.0.0.1'
+    mongo_host = 'mongo'
     mongo_port = '27017'
-    mongo_user = 'seo_ai'
-    mongo_pass = '14f118d5f470da591218e9a5'
+    mongo_user = 'root'
+    mongo_pass = 'example'
 
     mongo_db_name = 'seo_ai'
 

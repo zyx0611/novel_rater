@@ -87,7 +87,7 @@ class AllureResultParser:
             novel_result = data.get('attachments', [{'info': '评分结果为空!'}])[0]
             novel_info = {'info': '评分结果为空!'}
             if novel_result.get('source') is not None:
-                with open(f'allure-results/{novel_result.get('source')}', 'r') as f:
+                with open(f"allure-results/{novel_result.get('source')}", 'r') as f:
                     text = f.read()
                     novel_info = text
             records.append({
