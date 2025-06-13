@@ -11,8 +11,18 @@ services:
 
   novel_rater:
     build: .
+    ports:
+      - "8000:8000"
     depends_on:
       - mongo
     environment:
       - MONGO_URI=mongodb://root:example@mongo:27017/?authSource=admin
-    command: poetry run python main.py
+    command: [ "poetry", "run", "python", "-m", "app.main", "--mode", "api" ]  # 只跑接口服务
+
+  test_runner:
+    build: .
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://root:example@mongo:27017/?authSource=admin
+    command: [ "poetry", "run", "python", "-m", "app.main", "--mode", "test" ]  # 只跑测试

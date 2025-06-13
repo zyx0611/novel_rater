@@ -14,11 +14,12 @@ WORKDIR /app
 
 # 拷贝项目文件
 COPY pyproject.toml poetry.lock ./
-COPY . .
+COPY . /app
 
 # 安装依赖（包含 dev 依赖如 pytest）
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi
 
-# 设置默认执行命令
-CMD ["python", "main.py"]
+EXPOSE 8000
+
+CMD ["python", "app/main.py", "--mode", "api"]
