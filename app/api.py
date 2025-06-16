@@ -5,9 +5,11 @@ import os
 
 router = APIRouter()
 
-MONGO_URI = os.environ.get("MONGO_URI", "mongodb://root:example@mongo:27017/?authSource=admin")
+# MONGO_URI = os.environ.get("MONGO_URI", "mongodb://root:example@mongo:27017/?authSource=admin")
+MONGO_URI = os.environ.get("MONGO_URI", "mongodb://pytest:EhXioTZ78ve72h@13.229.95.250:27017/seo_ai?authSource=pytest")
 client = MongoClient(MONGO_URI)
-db = client["seo_ai"]
+# db = client["seo_ai"]
+db = client["pytest"]
 collection = db["text_result"]
 
 def serialize(doc):

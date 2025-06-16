@@ -23,18 +23,21 @@ def load_mongo_config(collection_name=None):
     """
     load_dotenv()  # 确保加载 .env 文件
 
-    # 从环境变量中读取MongoDB连接参数
-    # mongo_host = os.getenv('MONGO_HOST', '127.0.0.1')
-    # mongo_port_str = os.getenv('MONGO_PORT', '27017')
-    # mongo_port = int(mongo_port_str) if mongo_port_str.isdigit() else 27017
-    # mongo_user = os.getenv('MONGO_USER', 'seo_ai')
-    # mongo_pass = os.getenv('MONGO_PASS', '14f118d5f470da591218e9a5')
-    mongo_host = 'mongo'
+    # 线上mongodb
+    mongo_host = '13.229.95.250'
     mongo_port = '27017'
-    mongo_user = 'root'
-    mongo_pass = 'example'
+    mongo_user = 'pytest'
+    mongo_pass = 'EhXioTZ78ve72h'
+    # 本地mongodb
+    # mongo_host = 'mongo'
+    # mongo_port = '27017'
+    # mongo_user = 'root'
+    # mongo_pass = 'example'
+    # 本地运行时开启
+    # mongo_db_name = 'seo_ai'
+    # 线上运行使用pytest库
+    mongo_db_name = 'pytest'
 
-    mongo_db_name = 'seo_ai'
 
     if mongo_host and mongo_user and mongo_pass and mongo_db_name:
         return {
@@ -65,7 +68,9 @@ def get_connection(collection_name):
     db_name = config['database']
 
     if db_name not in GLOBAL_CLIENTS:
-        uri = f"mongodb://{config['user']}:{config['password']}@{config['host']}:{config['port']}/?authSource=admin"
+        # 本地调试
+        # uri = f"mongodb://{config['user']}:{config['password']}@{config['host']}:{config['port']}/?authSource=admin"
+        uri = f"mongodb://{config['user']}:{config['password']}@{config['host']}:{config['port']}/?authSource=pytest"
         client = MongoClient(
             uri,
             maxPoolSize=50,

@@ -1,28 +1,38 @@
-version: '3.10'
-
 services:
-  mongo:
-    image: mongo:6
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+#  mongo:
+#    image: mongo:6
+#    ports:
+#      - "27017:27017"
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: root
+#      MONGO_INITDB_ROOT_PASSWORD: example
 
   novel_rater:
     build: .
     ports:
       - "8000:8000"
-    depends_on:
-      - mongo
+# 本地调试可以启用本地mongo
+#    depends_on:
+#      - mongo
+    networks:
+      - app-network
     environment:
-      - MONGO_URI=mongodb://root:example@mongo:27017/?authSource=admin
+#      - MONGO_URI=mongodb://root:example@mongo:27017/?authSource=admin
+      - MONGO_URL=mongodb://pytest:EhXioTZ78ve72h@mongodb:27017/seo_ai?authSource=pytest
     command: [ "poetry", "run", "python", "-m", "app.main", "--mode", "api" ]  # 只跑接口服务
 
   test_runner:
     build: .
-    depends_on:
-      - mongo
+# 本地调试可以启用本地mongo
+#    depends_on:
+#      - mongo
+    networks:
+      - app-network
     environment:
-      - MONGO_URI=mongodb://root:example@mongo:27017/?authSource=admin
+#      - MONGO_URI=mongodb://root:example@mongo:27017/?authSource=admin
+      - MONGO_URL=mongodb://pytest:EhXioTZ78ve72h@mongodb:27017/seo_ai?authSource=pytest
     command: [ "poetry", "run", "python", "-m", "app.main", "--mode", "test" ]  # 只跑测试
+
+networks:
+  app-network:
+    external: true
