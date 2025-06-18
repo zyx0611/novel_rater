@@ -85,8 +85,8 @@ class AllureResultParser:
         if data.get("status"):
             logger.info(f"解析主测试记录: {data.get('name')} ({data.get('status')})")
             novel_result = data.get('attachments', [{'info': '评分结果为空!'}])[0]
-            novel_info = {'info': '评分结果为空!'}
-            if novel_result.get('source') is not None:
+            novel_info = {}
+            if novel_result.get('source') is not None and novel_result.get('name') == '文章评分返回结果':
                 with open(f"allure-results/{novel_result.get('source')}", 'r') as f:
                     text = f.read()
                     novel_info = text
