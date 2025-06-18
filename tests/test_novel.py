@@ -16,19 +16,17 @@ def split_by_chapter(text):
     return chapters
 
 
-def split_chapter_into_chunks(chapter_title, content, max_length=3000):
+def split_chapter_into_chunks(chapter_title, content, max_length=4000):
     chunks = []
     start = 0
-    while start < len(content):
-        end = start + max_length
-        chunk = content[start:end]
-        chunks.append({
-            'chapter': chapter_title,
-            'text': chunk,
-            'start_idx': start,
-            'end_idx': min(end, len(content))
-        })
-        start = end
+    end = start + max_length
+    chunk = content[start:end]
+    chunks.append({
+        'chapter': chapter_title,
+        'text': chunk,
+        'start_idx': start,
+        'end_idx': min(end, len(content))
+    })
     return chunks
 
 
@@ -48,8 +46,8 @@ def load_article_chunks(path, max_length=3000):
 
 
 #用 fixture 参数化文章段落
-# @pytest.fixture(params=load_article_chunks("../斗破苍穹.txt"))
-@pytest.fixture(params=load_article_chunks("斗破苍穹.txt"))
+@pytest.fixture(params=load_article_chunks("../斗破苍穹.txt"))
+# @pytest.fixture(params=load_article_chunks("斗破苍穹.txt"))
 def article_chunk(request):
     return request.param
 
