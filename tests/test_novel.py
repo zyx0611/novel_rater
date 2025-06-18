@@ -46,8 +46,8 @@ def load_article_chunks(path, max_length=3000):
 
 
 #用 fixture 参数化文章段落
-@pytest.fixture(params=load_article_chunks("../斗破苍穹.txt"))
-# @pytest.fixture(params=load_article_chunks("斗破苍穹.txt"))
+# @pytest.fixture(params=load_article_chunks("../斗破苍穹.txt"))
+@pytest.fixture(params=load_article_chunks("斗破苍穹.txt"))
 def article_chunk(request):
     return request.param
 
